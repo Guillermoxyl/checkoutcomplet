@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Finalizar Compra - CompletCraft</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- ESTILOS BASE --- */
+        :root {
+            --mc-bg-page: #191919;
+            --mc-bg-card: #282828;
+            --mc-bg-card-hover: #313233;
+            --mc-green-main: #3C8527;
+            --mc-green-light: #58A53E;
+            --mc-text-white: #FFFFFF;
+            --mc-text-gray: #CCCCCC;
+            --mc-red: #D22630;
+            --mc-gold: #F5C342;
+            --font-title: 'VT323', monospace;
+            --font-body: 'Noto Sans', sans-serif;
+            
+            /* Colores de Pago */
+            --paypal-blue: #0070ba;
+            --mp-blue: #009ee3;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        /* Bloqueo de scroll horizontal para móviles */
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body {
+            background-color: var(--mc-bg-page);
+            color: var(--mc-text-white);
+            font-family: var(--font-body);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-title);
+            text-transform: uppercase;
+            line-height: 1.1;
+            text-shadow: 2px 2px 0 #000;
+        }
+        
+        /* Contenedor centrado */
+        .container { max-width: 800px; margin: 0 auto; padding: 0 20px; width: 100%; }
+
+        /* --- NAV SIMPLIFICADO --- */
+        nav {
+            background: #000;
+            height: 90px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 2px solid #333;
+        }
+        .logo-nav { height: 80px; width: auto; }
+
+        /* --- CONTADOR Y PRECIO --- */
+        .urgent-banner {
+            background: var(--mc-red);
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+        }
+
+        .checkout-box {
+            background: var(--mc-bg-card);
+            border: 4px solid #000;
+            padding: 40px;
+            margin: 40px auto;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .timer-display {
+            font-family: var(--font-title);
+            font-size: 4rem;
+            color: var(--mc-red);
+            margin: 10px 0;
+            letter-spacing: 2px;
+            background: #000;
+            display: inline-block;
+            padding: 5px 20px;
+            border: 2px solid #333;
+        }
+
+        /* --- PRODUCT VISUALS (IMÁGENES DEL PANEL) --- */
+        .product-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .product-img-container {
+            background: #000;
+            border: 2px solid #444;
+            padding: 5px;
+        }
+        .product-img-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .product-label {
+            font-size: 0.8rem;
+            color: var(--mc-text-gray);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .price-container {
+            margin: 30px 0;
+            border-top: 2px dashed #555;
+            border-bottom: 2px dashed #555;
+            padding: 20px 0;
+        }
+
+        .old-price { 
+            font-size: 1.5rem; 
+            text-decoration: line-through; 
+            color: var(--mc-red); 
+            font-weight: bold;    
+            opacity: 0.8;
+        }
+        
+        .new-price { font-size: 4rem; color: var(--mc-green-light); font-family: var(--font-title); line-height: 1; }
+        
+        /* --- MENSAJE DEL CREADOR --- */
+        .creator-note {
+            background: rgba(0,0,0,0.4);
+            border-left: 4px solid var(--mc-gold);
+            padding: 15px;
+            text-align: left;
+            margin: 20px 0 30px 0;
+            font-style: italic;
+            font-size: 1rem;
+            color: #ddd;
+        }
+        .creator-head {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--mc-gold);
+            font-style: normal;
+            text-transform: uppercase;
+        }
+        .creator-avatar { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; margin-right: 10px; }
+
+        /* --- BOTONES DE PAGO --- */
+        .payment-btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            margin-bottom: 15px;
+            font-family: var(--font-body);
+            font-weight: 900;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #fff;
+            border: 2px solid #000;
+            transition: transform 0.1s;
+            cursor: pointer;
+            position: relative;
+        }
+        .payment-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .payment-btn:active { transform: translateY(2px); }
+
+        .btn-paypal { background-color: var(--paypal-blue); box-shadow: inset 3px 3px 0 rgba(255,255,255,0.2); }
+        .btn-mp { background-color: var(--mp-blue); box-shadow: inset 3px 3px 0 rgba(255,255,255,0.2); }
+
+        /* --- DISCLAIMER --- */
+        .disclaimer-box {
+            background: #3d2e00;
+            border: 2px solid var(--mc-gold);
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--mc-gold);
+            font-weight: bold;
+        }
+
+        /* --- TESTIMONIOS (GRID) --- */
+        .grid-3 { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 20px; 
+            margin-top: 40px; 
+        }
+        .mc-card { 
+            background-color: var(--mc-bg-card); 
+            border: 2px solid #000; 
+            padding: 20px; 
+            text-align: left;
+        }
+        .testimonial-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; border-bottom: 1px solid #444; padding-bottom: 10px; }
+        .user-avatar { width: 40px; height: 40px; border: 2px solid #fff; border-radius: 4px; }
+        .testimonial-shot { width: 100%; height: auto; border: 2px solid #000; margin-top: 10px; display: block; }
+
+        /* --- MOBILE OPTIMIZATION --- */
+        @media (max-width: 768px) {
+            nav { height: 70px; }
+            .logo-nav { height: 60px; }
+            .timer-display { font-size: 3rem; }
+            h1 { font-size: 2.2rem; }
+            .checkout-box { padding: 20px; margin: 20px 0; }
+            .grid-3 { grid-template-columns: 1fr; }
+            .new-price { font-size: 3.5rem; }
+            
+            /* En celular ponemos una imagen debajo de la otra */
+            .product-showcase { grid-template-columns: 1fr; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <img src="https://imgur.com/Hms2bZH.png" alt="Logo CompletCraft" class="logo-nav">
+    </nav>
+
+    <div class="urgent-banner">
+        ⚠️ ATENCIÓN: LA OFERTA EXPIRA CUANDO EL CONTADOR LLEGUE A CERO
+    </div>
+
+    <div class="container">
+        <div class="checkout-box">
+            <h1 style="color: var(--mc-green-light);">OFERTA FLASH ACTIVADA</h1>
+            <p>Estás a un paso de blindar tu historia para siempre.</p>
+            
+            <div id="countdown" class="timer-display">15:00</div>
+            <p style="font-size: 0.9rem; color: #888;">TIEMPO RESTANTE PARA MANTENER EL PRECIO</p>
+
+            <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--mc-gold);">LO QUE ESTÁS RECIBIENDO:</h3>
+            <div class="product-showcase">
+                <div>
+                    <div class="product-label">PANEL INTERACTIVO</div>
+                    <div class="product-img-container">
+                        <img src="https://imgur.com/dvk1RrT.png" alt="Panel CompletCraft">
+                    </div>
+                </div>
+                <div>
+                    <div class="product-label">TODOS LOS MÓDULOS</div>
+                    <div class="product-img-container">
+                        <img src="https://imgur.com/EJ1wHqr.png" alt="Módulos Pasos">
+                    </div>
+                </div>
+            </div>
+            <div class="price-container">
+                <div class="old-price">Precio Normal: $49 USD</div>
+                <div class="new-price">$14 USD</div>
+                <div style="background: var(--mc-red); color:#fff; display:inline-block; padding: 2px 10px; font-weight:bold; font-size: 0.9rem; transform: rotate(-2deg);">AHORRAS 70%</div>
+            </div>
+
+            <div class="creator-note">
+                <div class="creator-head">
+                    <img src="https://imgur.com/MiruIA2.png" alt="Guille" class="creator-avatar">
+                    GUILLE (Creador):
+                </div>
+                "Este es el mejor sistema que se ha creado para proteger cuentas de Minecraft Premium. Es visualmente interactivo y fácil de seguir. Está diseñado para que vos simplemente cliques y empieces a proteger tu cuenta desde cero. Muchos jugadores ya se protegieron con él en versiones anteriores de CompletCraft, por lo tanto, <strong>ya está validado por más de 1000 personas.</strong> No dejes pasar esta oportunidad."
+            </div>
+
+            <h3 style="margin-bottom: 20px;">ELIGE TU MÉTODO DE PAGO:</h3>
+            
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <input type="hidden" name="cmd" value="_s-xclick" />
+                <input type="hidden" name="hosted_button_id" value="C7ZGR9CAHZEF8" />
+                <input type="hidden" name="currency_code" value="USD" />
+                
+                <button type="submit" class="payment-btn btn-paypal" title="Pagar de forma segura con PayPal">
+                    PAGAR CON PAYPAL 💳
+                </button>
+            </form>
+            <a href="https://mpago.la/2HV6UL7" class="payment-btn btn-mp">
+                PAGAR CON MERCADO PAGO 🤝
+            </a>
+
+            <div class="disclaimer-box">
+                ✋ IMPORTANTE: Una vez hecho el pago, abre un ticket en Discord y manda foto del comprobante para que te demos el rango y acceso automáticamente.
+            </div>
+        </div>
+
+        <h2 class="text-center" style="margin-top: 60px; text-align: center;">JUGADORES QUE YA ESTÁN PROTEGIDOS</h2>
+        
+        <div class="grid-3">
+             <div class="mc-card">
+                <div class="testimonial-header">
+                    <img src="https://imgur.com/yaZVFSU.png" alt="@Jose23.10" class="user-avatar">
+                    <div>
+                        <strong style="color: var(--mc-green-light);">@Jose23.10</strong><br>
+                        <span style="color: #888; font-size: 0.8rem;">(Cliente Verificado)</span>
+                    </div>
+                </div>
+                <p>“Hice el modo exprés y en 15 min ya tenía 2FA y todo verde. Tremendo.”</p>
+                <img src="https://imgur.com/tcATg3V.png" alt="Testimonio" class="testimonial-shot">
+            </div>
+
+            <div class="mc-card">
+                <div class="testimonial-header">
+                    <img src="https://imgur.com/tZwYby5.png" alt="@the_morsilla01" class="user-avatar">
+                    <div>
+                        <strong style="color: var(--mc-green-light);">@the_morsilla01</strong><br>
+                        <span style="color: #888; font-size: 0.8rem;">(Cliente Verificado)</span>
+                    </div>
+                </div>
+                <p>“El certificado y el rol en Discord son la frutilla del postre. Cero estrés.”</p>
+                <img src="https://imgur.com/Bsd0ZQ8.png" alt="Testimonio" class="testimonial-shot">
+            </div>
+
+            <div class="mc-card">
+                <div class="testimonial-header">
+                    <img src="https://imgur.com/Vky8utU.png" alt="@nanii.xit" class="user-avatar">
+                    <div>
+                        <strong style="color: var(--mc-green-light);">@nanii.xit</strong><br>
+                        <span style="color: #888; font-size: 0.8rem;">(Cliente Verificado)</span>
+                    </div>
+                </div>
+                <p>“Mucho mejor que buscar videos sueltos. Todo claro y actualizado.”</p>
+                <img src="https://imgur.com/BycLxca.png" alt="Testimonio" class="testimonial-shot">
+            </div>
+
+             <div class="mc-card">
+                <div class="testimonial-header">
+                    <img src="https://imgur.com/oDqPZO4.png" alt="@mc.eyes" class="user-avatar">
+                    <div>
+                        <strong style="color: var(--mc-green-light);">@mc.eyes</strong><br>
+                        <span style="color: #888; font-size: 0.8rem;">(Cliente Verificado)</span>
+                    </div>
+                </div>
+                <p>funcionando todo perfecto, bien protegido. ahora a jugar tranquilo :D</p>
+                <img src="https://imgur.com/46LvOOm.png" alt="Testimonio" class="testimonial-shot">
+            </div>
+
+            <div class="mc-card">
+                <div class="testimonial-header">
+                    <img src="https://imgur.com/tVMhHlm.png" alt="@valen_god" class="user-avatar">
+                    <div>
+                        <strong style="color: var(--mc-green-light);">@valen_god</strong><br>
+                        <span style="color: #888; font-size: 0.8rem;">(Cliente Verificado)</span>
+                    </div>
+                </div>
+                <p>Lo estuve probando y eh implementado la mayoria de cosas y la verdad que todo excelente. 10/10</p>
+                <img src="https://imgur.com/q9VSCgw.png" alt="Testimonio" class="testimonial-shot">
+            </div>
+
+            <div class="mc-card">
+                <div class="testimonial-header">
+                    <img src="https://imgur.com/QhB0HvH.png" alt="@geroo1405" class="user-avatar">
+                    <div>
+                        <strong style="color: var(--mc-green-light);">@geroo1405</strong><br>
+                        <span style="color: #888; font-size: 0.8rem;">(Cliente Verificado)</span>
+                    </div>
+                </div>
+                <p>por ahora todo perfecto, muy buena atención y muy bien protegida... vuelvo en 3 meses a actualizar</p>
+                <img src="https://imgur.com/oD0pisU.png" alt="Testimonio" class="testimonial-shot">
+            </div>
+        </div>
+
+        <div style="margin-bottom: 80px;"></div>
+    </div>
+
+    <footer style="background: #000; padding: 30px 0; text-align: center; border-top: 4px solid #333;">
+        <p style="font-size: 0.9rem; color: #555;">CompletCraft - Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        let duration = 15 * 60; // 15 minutos en segundos
+        const display = document.querySelector('#countdown');
+
+        function startTimer() {
+            const timer = setInterval(function () {
+                let minutes = parseInt(duration / 60, 10);
+                let seconds = parseInt(duration % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--duration < 0) {
+                    clearInterval(timer);
+                    display.textContent = "00:00";
+                    display.style.color = "#555";
+                    display.style.textDecoration = "line-through";
+                    // Aquí podrías ocultar los botones de pago si quisieras ser muy estricto
+                    alert("La oferta ha expirado. El precio ha vuelto a la normalidad.");
+                }
+            }, 1000);
+        }
+
+        window.onload = function () {
+            startTimer();
+        };
+    </script>
+</body>
+</html>
